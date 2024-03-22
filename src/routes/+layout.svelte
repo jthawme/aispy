@@ -128,6 +128,17 @@
 		.inGame & {
 			width: 160px;
 		}
+
+		@include tablet {
+			position: fixed;
+
+			top: var(--inner-padding);
+			left: 50%;
+
+			transform: translate3d(-50%, 0, 0);
+
+			width: 250px;
+		}
 	}
 
 	.content {

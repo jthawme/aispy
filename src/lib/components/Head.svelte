@@ -5,7 +5,8 @@
 	export let title = '';
 
 	/** @type {string} */
-	export let description = '';
+	export let description =
+		'Single player I Spy. Finally you no longer need friends to play this beloved childrens game';
 
 	/** @type {string} */
 	export let seperator = ' – ';
