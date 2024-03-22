@@ -14,7 +14,6 @@ import {
 	PRIVATE_CREDENTIALS_TYPE,
 	PRIVATE_CREDENTIALS_UNIVERSE_DOMAIN
 } from '$env/static/private';
-import credentials from '$lib/credentials.json';
 
 /**
  *
