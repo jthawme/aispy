@@ -13,11 +13,67 @@
 	import { derived } from 'svelte/store';
 	import { fly } from 'svelte/transition';
 
+	/**
+	 * @type {Record<'CHARACTERS' | 'CORRECT' | 'WORDS' | 'IMAGE' | 'WRONG' | 'NO_GUESSES' | 'LOSE', Array<(answer: string) => string>>}
+	 */
+	const SPEECH = Object.freeze({
+		CHARACTERS: [(val) => `The answer has ${val.split(' ').join('').length} characters total`],
+		WORDS: [
+			(val) => {
+				const w = val.split(' ').length;
+				return `The answer has ${w} word${w > 1 ? 's' : ''} total`;
+			}
+		],
+		IMAGE: [
+			(val) => `Here is the image the answer is in`,
+			(val) => `Take a look at the photo with the answer`
+		],
+		WRONG: [
+			(val) => `Not quite! The first letter is correct though.`,
+			(val) => `Not sure what that is, but it isn't right`,
+			(val) => `Nope! Now you're really just guessing`,
+			(val) => `Correct... Oh wait no, not correct sorry`,
+			(val) => `I wish it was that, but you only got the first letter correct`
+		],
+		CORRECT: [
+			(val) => `You got it! It was ${val}`,
+			(val) => `There it is, you are correct, it was ${val}`,
+			(val) => `Wow, I have some competition, that was correct, it was ${val}`
+		],
+		NO_GUESSES: [
+			(val) => `No more guesses I'm afraid! The answer was ${val}`,
+			(val) => `You did not get it, the answer was ${val}`,
+			(val) => `You've used up your guesses, the answer was ${val}`
+		],
+		LOSE: [
+			(val) => `A-ha! Foiled again, the answer was ${val}`,
+			(val) => `AI is far superiorororor. The answer was ${val}`,
+			(val) => `That's embarassing for you, the answer was ${val}`,
+			(val) => `You won't like it, but the answer was ${val}`
+		]
+	});
+
+	/**
+	 *
+	 * @param {keyof SPEECH} key
+	 * @param {string} [value]
+	 */
+	function getRandomSpeech(key, value = '') {
+		return SPEECH[key][Math.floor(SPEECH[key].length * Math.random())](value);
+	}
+
+	// We grab the store from /game/layout.svelte that is controlling a lot of the shared state
 	const game = getContext('game');
+
+	/**
+	 * @type {import('svelte/store').Readable<{text: string, image: string} | null>}
+	 */
 	const answer = getContext('answer');
 
-	const answerText = derived([answer], ([$answer]) => $answer?.text);
+	// This is a convenience function for reactivity, to determine when an answer changes
+	const answerText = derived([answer], ([$answer]) => $answer?.text || '');
 
+	// This dict keeps a readable version of what the state the game is currently in
 	const GAME_STATE = {
 		PLAY: 0,
 		CORRECT: 1,
@@ -25,21 +81,29 @@
 		GUESS: 3
 	};
 
+	// Whether onMount has run ultimately, to do some on display animation
 	let mount = false;
 
+	// A variable to track temporarily whether a guess was wrong
 	let wrongGuess = false;
 
+	// These variables monitor our lifelines in game
 	let showCharacters = false;
 	let showWords = false;
 	let showImage = false;
 	let showImageModal = false;
 
+	// This variable is the source of truth of what state the game is in
 	let gameState = GAME_STATE.PLAY;
 
+	// This text is what the 'computer' is currently needing to say
 	let displayText = '';
 
+	// And this is tracking whether it is currently speaking it. Muted or not
 	let speaking = false;
 
+	// To display the ephemeral pill component with the correct penalty for a skipped
+	// answer, we keep track of it via this variable. Initialised as the full penalty
 	let skippedScore = COST.SKIP;
 
 	function onUseCharacters() {
@@ -48,7 +112,7 @@
 		}
 
 		game.addScore(COST.CHARACTERS);
-		displayText = `The answer has ${$answer.text.split(' ').join('').length} characters total`;
+		displayText = getRandomSpeech('CHARACTERS', $answer?.text);
 		showCharacters = true;
 	}
 
@@ -58,15 +122,14 @@
 		}
 
 		game.addScore(COST.WORDS);
-		const w = $answer.text.split(' ').length;
-		displayText = `The answer has ${w} word${w > 1 ? 's' : ''} total`;
+		displayText = getRandomSpeech('WORDS', $answer?.text);
 		showWords = true;
 	}
 
 	function onUseImage() {
 		if (!showImage) {
 			game.addScore(COST.IMAGE);
-			displayText = `Here is the image the answer is in`;
+			displayText = getRandomSpeech('IMAGE');
 			showImage = true;
 		}
 
@@ -82,8 +145,8 @@
 	 * @param {string} guess
 	 */
 	async function onSubmit(guess) {
-		if (guess.toLowerCase() === $answer.text.toLowerCase()) {
-			displayText = `You got it! It was ${$answer.text}`;
+		if (guess.toLowerCase() === $answer?.text.toLowerCase()) {
+			displayText = getRandomSpeech('CORRECT', $answer?.text);
 			gameState = GAME_STATE.CORRECT;
 			game.addTotal($game.score);
 		} else {
@@ -94,7 +157,7 @@
 				onSkip(true);
 			} else {
 				wrongGuess = true;
-				displayText = `Not quite! The first letter is correct though.`;
+				displayText = getRandomSpeech('WRONG');
 			}
 		}
 	}
@@ -148,8 +211,8 @@
 
 		displayText =
 			forced === true
-				? `No more guesses I'm afraid! The answer was ${$answerText}`
-				: `A-ha! Foiled again, the answer was ${$answerText}`;
+				? getRandomSpeech('NO_GUESSES', $answer?.text)
+				: getRandomSpeech('LOSE', $answer?.text);
 	}
 
 	onMount(() => {

@@ -14,3 +14,7 @@ export const MEDIA_TYPE = Object.freeze({
 });
 
 export const MAX_IMAGES = 4;
+
+export const STORAGE = {
+	HIGH_SCORE: 'previous'
+};

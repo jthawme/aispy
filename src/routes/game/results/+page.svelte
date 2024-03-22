@@ -4,7 +4,7 @@
 	import Button from '$lib/components/UI/Button.svelte';
 	import TextLink from '$lib/components/UI/TextLink.svelte';
 	import { clamp, doubleRaf, getPersistedValue, persistValue } from '$lib/utils.js';
-	import { STARTING_SCORE } from '$lib/constants.js';
+	import { STARTING_SCORE, STORAGE } from '$lib/constants.js';
 
 	const game = getContext('game');
 
@@ -64,13 +64,12 @@
 	}
 
 	onMount(async () => {
-		const previous = getPersistedValue('previous', 0, (v) => parseInt(v));
+		const previous = getPersistedValue(STORAGE.HIGH_SCORE, 0, (v) => parseInt(v));
 
 		if (previous < $game.total) {
 			highScore = true;
+			persistValue(STORAGE.HIGH_SCORE, $game.total);
 		}
-
-		persistValue('previous', $game.total);
 
 		await doubleRaf();
 

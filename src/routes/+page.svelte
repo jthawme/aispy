@@ -3,9 +3,23 @@
 	import ContentBox from '$lib/components/Compound/ContentBox.svelte';
 	import Button from '$lib/components/UI/Button.svelte';
 	import TextLink from '$lib/components/UI/TextLink.svelte';
+	import { STORAGE } from '$lib/constants.js';
+	import { getPersistedValue } from '$lib/utils.js';
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 
+	/**
+	 * @type {number}
+	 *
+	 * This is populated via local storage on subsequent visits
+	 */
+	let highScore = 0;
+
+	/**
+	 * @type {string[]}
+	 *
+	 * A list of descriptions to cycle through
+	 */
 	let descriptions = [
 		'Play single player <em class="color-yellow">I Spy</em>',
 		'Find new <em class="color-red">passions</em> for life',
@@ -14,17 +28,27 @@
 		'Never need <em class="color-red">friends</em> again'
 	];
 
-	let index = 0;
+	/**
+	 * @type {number}
+	 *
+	 * An index for which description to use
+	 */
+	let descriptionIndex = 0;
 
 	/** @type {ReturnType<setTimeout>} */
 	let timer;
 
-	$: description = descriptions[index];
+	/**
+	 * @type {string}
+	 *
+	 * The current description phrase to display
+	 */
+	$: description = descriptions[descriptionIndex];
 
 	function nextDescription(initial = false) {
 		timer = setTimeout(
 			() => {
-				index = Math.floor(Math.random() * descriptions.length);
+				descriptionIndex = Math.floor(Math.random() * descriptions.length);
 				nextDescription();
 			},
 			initial ? 5000 : 2000
@@ -41,6 +65,9 @@
 
 	onMount(() => {
 		nextDescription(true);
+
+		// Get a possible high score from
+		highScore = getPersistedValue(STORAGE.HIGH_SCORE, 0, (v) => parseInt(v));
 
 		return () => {
 			clearTimeout(timer);
@@ -64,7 +91,7 @@
 
 	<ContentBox headerAlign="space">
 		<svelte:fragment slot="header">
-			<span>High Score: 0</span>
+			<span>High Score: {highScore}</span>
 			<TextLink>Welcome back</TextLink>
 		</svelte:fragment>
 
