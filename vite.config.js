@@ -1,5 +1,4 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { TransformServer } from 'jt-factory/vite';
 import svg from '@poppanator/sveltekit-svg';
 import { defineConfig } from 'vite';
 import BuildManifest from './tools/BuildManifest.js';
@@ -7,7 +6,6 @@ import BuildManifest from './tools/BuildManifest.js';
 export default defineConfig({
 	plugins: [
 		sveltekit(),
-		TransformServer(),
 		svg({
 			includePaths: ['./src/lib/icons/'],
 			svgoOptions: {
@@ -29,9 +27,25 @@ export default defineConfig({
 				]
 			}
 		}),
+		svg({
+			includePaths: ['./src/lib/assets/'],
+			svgoOptions: {
+				multipass: true,
+				plugins: [
+					{
+						name: 'preset-default',
+						// by default svgo removes the viewBox which prevents svg icons from scaling
+						// not a good idea! https://github.com/svg/svgo/pull/1461
+						params: { overrides: { removeViewBox: false } }
+					},
+					{ name: 'removeAttrs', params: { attrs: '(width|height)' } }
+				]
+			}
+		}),
 		BuildManifest({
 			manifest: {
-				name: 'Svelte Template'
+				name: 'AI Spy',
+				short_name: 'AI Spy'
 			}
 		})
 	],

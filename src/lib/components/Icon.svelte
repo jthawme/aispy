@@ -1,7 +1,5 @@
 <script>
-	import close from '$lib/icons/close.svg?component';
-
-	const icons = Object.freeze({ close });
+	import { icons } from './icons.js';
 
 	/** @type {keyof icons}*/
 	export let name;

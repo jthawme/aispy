@@ -1,17 +1,15 @@
 {
-	"name": "sveltekit-template",
-	"version": "0.0.1",
+	"name": "aispy",
+	"version": "2.0.0",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"build": "npm run assets && vite build",
+		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"lint": "prettier --check .",
-		"format": "prettier --write .",
-		"cms": "npx decap-server",
-		"assets": "jt-factory"
+		"format": "prettier --write ."
 	},
 	"devDependencies": {
 		"@poppanator/sveltekit-svg": "^4.2.1",
@@ -31,7 +29,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"jt-factory": "^0.1.29",
+		"@google-cloud/vision": "^4.1.0",
 		"normalize.css": "^8.0.1",
 		"sass": "^1.70.0",
 		"sharp": "^0.33.2"

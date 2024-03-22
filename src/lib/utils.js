@@ -1,5 +1,4 @@
-import { page } from '$app/stores';
-import { get } from 'svelte/store';
+import { PUBLIC_GOOGLE_RECAPTCHA_KEY } from '$env/static/public';
 
 /**
  * A performant version of a function call, used to keep functions
@@ -223,7 +222,7 @@ export const breakpointListen = (query, cb) => {
 /**
  * Adds an event listener and returns a cb to unlisten
  *
- * @param {HTMLElement | Window | Document} el
+ * @param {HTMLElement | Window | Document | SpeechSynthesisUtterance} el
  * @param {string} evt
  * @param {EventListenerOrEventListenerObject} cb
  * @param {object | boolean} opts
@@ -436,7 +435,56 @@ export const getNth = (arr, idx, total) => {
 
 /**
  *
- * @param {string} slug
- * @returns {boolean}
+ * @param {File} file
+ * @returns {Promise<string>}
  */
-export const isActive = (slug) => get(page).url.pathname === slug;
+export const fileToUrl = (file) => {
+	return new Promise((resolve, reject) => {
+		const fr = new FileReader();
+		fr.onload = () => {
+			if (typeof fr.result === 'string') {
+				resolve(fr.result);
+			} else {
+				reject();
+			}
+		};
+		fr.readAsDataURL(file);
+	});
+};
+
+export const getRecaptcha = () => {
+	if (!('grecaptcha' in window)) {
+		throw new Error('Grecaptcha not loaded');
+	}
+
+	return new Promise((resolve) => {
+		// @ts-ignore
+		grecaptcha.ready(function () {
+			// @ts-ignore
+			grecaptcha.execute(PUBLIC_GOOGLE_RECAPTCHA_KEY, { action: 'submit' }).then((token) => {
+				resolve(token);
+			});
+		});
+	});
+};
+
+/**
+ *
+ * @param {string} url
+ * @param {number} maxWidth
+ */
+export const imageResize = async (url, maxWidth = 800) => {
+	const img = await loadImageElement(url);
+
+	const w = Math.min(maxWidth, img.width);
+	const h = (w / img.width) * img.height;
+
+	const canvas = new OffscreenCanvas(w, h);
+	const ctx = canvas.getContext('2d');
+
+	ctx?.drawImage(img, 0, 0, w, h);
+
+	const blob = await canvas.convertToBlob();
+
+	return URL.createObjectURL(blob);
+};

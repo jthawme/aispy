@@ -17,3 +17,5 @@ static/icons
 static/manifest.json
 
 .netlify
+
+src/lib/credentials.json

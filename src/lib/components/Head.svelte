@@ -14,10 +14,10 @@
 	export let image = null;
 	// export let favicon = null;
 	/** @type {string} */
-	export let domain = 'https://jthaw.me';
+	export let domain = 'https://aispy.io';
 
 	/** @type {string} */
-	export let defaultTitle = 'Template';
+	export let defaultTitle = 'AI Spy';
 	/** @type {string} */
 	export let defaultDescription = '';
 	/** @type {string | null} */

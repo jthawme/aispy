@@ -1,5 +1,19 @@
 @import 'normalize.css/normalize';
 
+@font-face {
+	font-family: 'GT Haptik';
+	font-weight: 500;
+	font-display: swap;
+	src: url('/fonts/GT-Haptik-Medium.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'GT Haptik';
+	font-style: italic;
+	font-weight: 500;
+	font-display: swap;
+	src: url('/fonts/GT-Haptik-Medium-Rotalic.woff2') format('woff2');
+}
+
 *,
 *:before,
 *:after {
@@ -7,23 +21,193 @@
 }
 
 :root {
-	--font-family-serif: serif;
-	--font-family-sans-serif: sans-serif;
+	--font-family-body: 'GT Haptik', serif;
 
-	--font-size-xx-small: 6px;
-	--font-size-x-small: 10px;
 	--font-size-small: 10px;
 	--font-size-normal: 16px;
 	--font-size-medium: 18px;
 	--font-size-large: 24px;
+	--font-size-xx-large: 40px;
+
+	--font-weight-body: 500;
+
+	--color-blue-rgb: 0, 76, 207;
+	--color-blue: rgb(var(--color-blue-rgb));
+	--color-red-rgb: 239, 63, 64;
+	--color-red: rgb(var(--color-red-rgb));
+	--color-green-rgb: 75, 183, 149;
+	--color-green: rgb(var(--color-green-rgb));
+	--color-yellow-rgb: 245, 164, 63;
+	--color-yellow: rgb(var(--color-yellow-rgb));
+
+	--color-text: #21294b;
+	--color-text-light: #969db2;
+	--color-bg: #f5f5f5;
+
+	--color-white: #ffffff;
+
+	--inner-padding: 20px;
+	--outer-padding: 10px;
+
+	--standard-easing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 html,
 body {
-	line-height: 1.4;
-	font-family: sans-serif;
+	line-height: 1.2;
+
+	font-size: var(--font-size-normal);
+	font-family: var(--font-family-body);
+	font-weight: var(--font-weight-body);
+
+	color: var(--color-text);
+	background-color: var(--color-bg);
+
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	font-feature-settings: 'ss01' 1;
+}
+
+body {
+	overflow: hidden;
 }
 
 img {
 	max-width: 100%;
+}
+
+.btn-reset {
+	appearance: none;
+
+	padding: 0;
+	margin: 0;
+
+	border: none;
+
+	background-color: transparent;
+
+	outline: none;
+
+	&:not(:disabled) {
+		cursor: pointer;
+	}
+}
+
+input,
+select,
+button {
+	font-family: inherit;
+	font-weight: inherit;
+	color: inherit;
+	font-feature-settings: inherit;
+}
+
+a.std,
+button.std {
+	transition: {
+		duration: 0.15s;
+		property: opacity;
+	}
+
+	@include hover {
+		opacity: 0.5;
+	}
+}
+
+.color-blue {
+	color: var(--color-blue);
+}
+
+.color-red {
+	color: var(--color-red);
+}
+
+.color-green {
+	color: var(--color-green);
+}
+
+.color-yellow {
+	color: var(--color-yellow);
+}
+
+.color-text {
+	color: var(--color-text);
+}
+
+.color-text-light {
+	color: var(--color-text-light);
+}
+
+.color-bg {
+	color: var(--color-bg);
+}
+
+.color-white {
+	color: var(--color-white);
+}
+
+.bg-blue {
+	background-color: var(--color-blue);
+}
+
+.bg-red {
+	background-color: var(--color-red);
+}
+
+.bg-green {
+	background-color: var(--color-green);
+}
+
+.bg-yellow {
+	background-color: var(--color-yellow);
+}
+
+.bg-text {
+	background-color: var(--color-text);
+}
+
+.bg-text-light {
+	background-color: var(--color-text-light);
+}
+
+.bg-bg {
+	background-color: var(--color-bg);
+}
+
+.bg-white {
+	background-color: var(--color-white);
+}
+
+.size-small {
+	font-size: var(--font-size-small);
+}
+
+.size-normal {
+	font-size: var(--font-size-normal);
+}
+
+.size-medium {
+	font-size: var(--font-size-medium);
+}
+
+.size-large {
+	font-size: var(--font-size-large);
+}
+
+.size-xx-large {
+	font-size: var(--font-size-xx-large);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: normal;
+}
+
+.grecaptcha-badge {
+	visibility: hidden !important;
 }

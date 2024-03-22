@@ -1,3 +1,5 @@
+import { getRecaptcha } from './utils.js';
+
 /**
  *
  * @param {string} url
@@ -32,6 +34,25 @@ export const api = {
 		 */
 		get(obj, fetch) {
 			return fetcher(`/api/basic${paramsToString(obj)}`, {}, fetch).then((resp) => resp.json());
+		}
+	},
+
+	images: {
+		/**
+		 *
+		 * @param {File[]} files
+		 */
+		async process(files) {
+			const token = await getRecaptcha();
+
+			const fd = new FormData();
+			fd.append('token', token);
+			files.forEach((file) => fd.append('file', file));
+
+			return fetcher(`/api/images`, {
+				method: 'POST',
+				body: fd
+			}).then((resp) => resp.json());
 		}
 	}
 };
