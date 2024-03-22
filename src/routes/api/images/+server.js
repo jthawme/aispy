@@ -1,7 +1,19 @@
 import { json } from '@sveltejs/kit';
 import vision from '@google-cloud/vision';
-import { PRIVATE_GOOGLE_RECAPTCHA_SECRET } from '$env/static/private';
-import credentials from '$lib/credentials.json';
+import {
+	PRIVATE_GOOGLE_RECAPTCHA_SECRET,
+	PRIVATE_CREDENTIALS_AUTH_PROVIDER_X509_CERT_URL,
+	PRIVATE_CREDENTIALS_AUTH_URI,
+	PRIVATE_CREDENTIALS_CLIENT_EMAIL,
+	PRIVATE_CREDENTIALS_CLIENT_ID,
+	PRIVATE_CREDENTIALS_CLIENT_X509_CERT_URL,
+	PRIVATE_CREDENTIALS_PRIVATE_KEY,
+	PRIVATE_CREDENTIALS_PRIVATE_KEY_ID,
+	PRIVATE_CREDENTIALS_PROJECT_ID,
+	PRIVATE_CREDENTIALS_TOKEN_URI,
+	PRIVATE_CREDENTIALS_TYPE,
+	PRIVATE_CREDENTIALS_UNIVERSE_DOMAIN
+} from '$env/static/private';
 
 /**
  *
@@ -28,7 +40,19 @@ const validateToken = (fetch, token) => {
  */
 const annotateImages = async (urls) => {
 	const client = new vision.ImageAnnotatorClient({
-		credentials
+		credentials: {
+			type: PRIVATE_CREDENTIALS_TYPE,
+			project_id: PRIVATE_CREDENTIALS_PROJECT_ID,
+			private_key_id: PRIVATE_CREDENTIALS_PRIVATE_KEY_ID,
+			private_key: PRIVATE_CREDENTIALS_PRIVATE_KEY.split('_').join('\n'),
+			client_email: PRIVATE_CREDENTIALS_CLIENT_EMAIL,
+			client_id: PRIVATE_CREDENTIALS_CLIENT_ID,
+			auth_uri: PRIVATE_CREDENTIALS_AUTH_URI,
+			token_uri: PRIVATE_CREDENTIALS_TOKEN_URI,
+			auth_provider_x509_cert_url: PRIVATE_CREDENTIALS_AUTH_PROVIDER_X509_CERT_URL,
+			client_x509_cert_url: PRIVATE_CREDENTIALS_CLIENT_X509_CERT_URL,
+			universe_domain: PRIVATE_CREDENTIALS_UNIVERSE_DOMAIN
+		}
 	});
 
 	const results = await Promise.all(
