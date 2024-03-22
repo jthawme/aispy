@@ -11,7 +11,13 @@
 		advancements have created.
 	</p>
 
-	<div class="privacy">
+	<p>
+		Take photos using your camera, and it will generate prompts for the children's game, <span
+			class="color-red">I Spy</span
+		> that you can guess to get a good score. Getting a good score is very important in life.
+	</p>
+
+	<div class="small">
 		<h2>Privacy</h2>
 
 		<p>
@@ -21,6 +27,18 @@
 				href="https://cloud.google.com/vision/docs/data-usage"
 				target="_blank">privacy policy</a
 			> applies also.
+		</p>
+	</div>
+
+	<div class="small">
+		<h2>Code</h2>
+
+		<p>
+			Find the entire codebase on <a
+				class="std"
+				href="https://github.com/jthawme/aispy"
+				target="_blank">github</a
+			>
 		</p>
 	</div>
 </div>
@@ -49,7 +67,7 @@
 		}
 	}
 
-	.privacy {
+	.small {
 		p {
 			font-size: var(--font-size-small);
 		}
