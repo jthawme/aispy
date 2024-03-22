@@ -4,6 +4,19 @@
 
 	const dispatch = createEventDispatcher();
 
+	const VOICES_AVOID = [
+		'Bad News',
+		'Bells',
+		'Boing',
+		'Bubbles',
+		'Cellos',
+		'Good News',
+		'Superstar',
+		'Whisper',
+		'Wobble',
+		'Zarvox'
+	];
+
 	/** @type {string} */
 	export let text;
 
@@ -54,9 +67,19 @@
 	 * @returns {Promise<void>}
 	 */
 	function speakText(_text) {
+		const voices = speechSynthesis
+			.getVoices()
+			.filter((item) => item.lang.startsWith('en-') && !VOICES_AVOID.includes(item.name));
+
+		const voice = voices.find((item) => item.default) ?? voices[0] ?? null;
+		// const voice = voices.find(item => item.localService)
+
 		const utterance = new SpeechSynthesisUtterance(_text);
-		utterance.lang = 'en-UK';
+		// utterance.lang = 'en-UK';
 		utterance.rate = 1;
+		utterance.voice = voice;
+
+		console.log(utterance);
 
 		// @ts-ignore
 		listenCb(utterance, 'boundary', onUtteranceBoundary);
