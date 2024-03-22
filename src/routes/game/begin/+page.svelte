@@ -164,6 +164,8 @@
 </script>
 
 <svelte:head>
+	<title>Begin – AI Spy</title>
+
 	<script
 		src={`https://www.google.com/recaptcha/api.js?render=${PUBLIC_GOOGLE_RECAPTCHA_KEY}`}
 	></script>

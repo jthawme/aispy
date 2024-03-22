@@ -167,6 +167,10 @@
 	$: browser && mount && beginGame($answerText);
 </script>
 
+<svelte:head>
+	<title>Play – AI Spy</title>
+</svelte:head>
+
 {#if $answer}
 	<Modal open={showImageModal} on:close={onImageModalClose}>
 		<div class="preview">

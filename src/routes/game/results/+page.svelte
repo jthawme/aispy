@@ -78,6 +78,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Results – AI Spy</title>
+</svelte:head>
+
 <div class="content" class:mount>
 	<div class="score">
 		<span class="score-top">{text[textIndex].title}</span>

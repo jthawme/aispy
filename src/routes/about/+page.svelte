@@ -1,3 +1,7 @@
+<svelte:head>
+	<title>About – AI Spy</title>
+</svelte:head>
+
 <div class="about-content">
 	<slot />
 

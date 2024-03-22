@@ -145,7 +145,11 @@
 {:else}
 	<ContentBox headerAlign="space">
 		<svelte:fragment slot="header">
-			<TextLink icon="camera" on:click={switchCamera}>Switch Camera</TextLink>
+			{#if devices.length > 1}
+				<TextLink icon="camera" on:click={switchCamera}>Switch Camera</TextLink>
+			{:else}
+				<span />
+			{/if}
 
 			<span class="color-text-light">{images}/{MAX_IMAGES} Photos</span>
 		</svelte:fragment>

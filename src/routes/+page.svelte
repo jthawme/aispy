@@ -3,7 +3,7 @@
 	import ContentBox from '$lib/components/Compound/ContentBox.svelte';
 	import Button from '$lib/components/UI/Button.svelte';
 	import TextLink from '$lib/components/UI/TextLink.svelte';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 
 	let descriptions = [
@@ -16,15 +16,19 @@
 
 	let index = 0;
 
+	/** @type {ReturnType<setTimeout>} */
 	let timer;
 
 	$: description = descriptions[index];
 
-	function nextDescription() {
-		timer = setTimeout(() => {
-			index = Math.floor(Math.random() * descriptions.length);
-			nextDescription();
-		}, 2000);
+	function nextDescription(initial = false) {
+		timer = setTimeout(
+			() => {
+				index = Math.floor(Math.random() * descriptions.length);
+				nextDescription();
+			},
+			initial ? 5000 : 2000
+		);
 	}
 
 	function onAboutClick(e) {
@@ -36,13 +40,17 @@
 	}
 
 	onMount(() => {
-		nextDescription();
+		nextDescription(true);
 
 		return () => {
 			clearTimeout(timer);
 		};
 	});
 </script>
+
+<svelte:head>
+	<title>AI Spy</title>
+</svelte:head>
 
 <div class="content">
 	<p class="lead">
@@ -74,7 +82,9 @@
 	}
 
 	.lead {
-		padding: var(--inner-padding) calc(var(--inner-padding) * 2);
+		padding: 0 calc(var(--inner-padding) * 2) var(--inner-padding);
+		margin-top: 0;
+
 		font-size: 6vw;
 
 		display: flex;
