@@ -89,16 +89,18 @@
 		</span>
 	</p>
 
-	<ContentBox headerAlign="space">
-		<svelte:fragment slot="header">
-			<span>High Score: {highScore}</span>
-			<TextLink>Welcome back</TextLink>
-		</svelte:fragment>
+	<div class="box">
+		<ContentBox headerAlign="space">
+			<svelte:fragment slot="header">
+				<span>High Score: {highScore}</span>
+				<TextLink>Welcome back</TextLink>
+			</svelte:fragment>
 
-		<Button to="/game" expand>Play</Button>
+			<Button to="/game" expand>Play</Button>
 
-		<TextLink slot="below" on:click={onAboutClick}>Play what?</TextLink>
-	</ContentBox>
+			<TextLink slot="below" on:click={onAboutClick}>Play what?</TextLink>
+		</ContentBox>
+	</div>
 </div>
 
 <style lang="scss">
@@ -106,17 +108,29 @@
 		margin: auto;
 
 		width: 100%;
+
+		@include large-mobile {
+			display: flex;
+
+			flex-direction: column;
+
+			align-items: center;
+
+			padding-top: 2em;
+		}
 	}
 
 	.lead {
 		padding: 0 calc(var(--inner-padding) * 2) var(--inner-padding);
 		margin-top: 0;
 
-		font-size: 6vw;
+		font-size: Min(6vw, 48px);
 
 		display: flex;
 
 		flex-direction: column;
+
+		width: 100%;
 
 		> span {
 			display: block;
@@ -125,6 +139,11 @@
 				align-self: flex-end;
 				text-align: right;
 			}
+		}
+
+		@include large-mobile {
+			margin: 0;
+			max-width: 900px;
 		}
 	}
 
@@ -135,6 +154,13 @@
 			display: block;
 			grid-column: 1 / -1;
 			grid-row: 1;
+		}
+	}
+
+	.box {
+		@include large-mobile {
+			max-width: 300px;
+			width: 100%;
 		}
 	}
 </style>

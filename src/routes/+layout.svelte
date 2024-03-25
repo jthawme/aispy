@@ -7,9 +7,10 @@
 	import { page } from '$app/stores';
 	import Logo from '$lib/components/UI/Logo.svelte';
 	import Animation from '$lib/components/Animation.svelte';
-	import AboutPage from './about/+page.svelte';
+	import AboutContent from '$lib/components/AboutContent.svelte';
 	import TextLink from '$lib/components/UI/TextLink.svelte';
 	import { fade } from 'svelte/transition';
+	import { onNavigate } from '$app/navigation';
 
 	/** @type {import('./$types').LayoutData} */
 	export let data;
@@ -32,6 +33,17 @@
 		history.back();
 	}
 
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) return;
+
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
+
 	$: asideOpen = $page.state.aside;
 	$: inGame =
 		$page.url.pathname.startsWith('/game/begin') || $page.url.pathname.startsWith('/game/play');
@@ -40,15 +52,21 @@
 
 <Head />
 
+<svelte:head>
+	<script defer data-domain="aispy.io" src="https://plausible.io/js/script.js"></script>
+</svelte:head>
+
 <aside class:asideOpen>
 	<div class="close">
 		<TextLink icon="x" theme="red" on:click={onReturn}>Close</TextLink>
 	</div>
 
-	<AboutPage>
+	<AboutContent>
 		<div class="aside-logo"><Logo /></div>
-	</AboutPage>
+	</AboutContent>
 </aside>
+
+<div class="backdrop" class:asideOpen />
 
 <main class:asideOpen class:inGame>
 	<div class="logo">
@@ -56,20 +74,22 @@
 	</div>
 
 	{#if asideOpen}
-		<button class="btn-reset click-back" on:click={onReturn} />
+		<button transition:fade class="btn-reset click-back" on:click={onReturn} />
 	{/if}
 
-	{#key explodeAnimation}
-		{#if explodeAnimation}
-			<div in:fade={{ delay: 500 }} out:fade class="animation">
-				<Animation name="explode" />
-			</div>
-		{:else}
-			<div in:fade={{ delay: 500 }} out:fade class="animation">
-				<Animation name="cycle" />
-			</div>
-		{/if}
-	{/key}
+	<div class="animation-wrap">
+		{#key explodeAnimation}
+			{#if explodeAnimation}
+				<div in:fade={{ delay: 500 }} out:fade class="animation">
+					<Animation name="explode" />
+				</div>
+			{:else}
+				<div in:fade={{ delay: 500 }} out:fade class="animation">
+					<Animation name="cycle" />
+				</div>
+			{/if}
+		{/key}
+	</div>
 
 	<div class="content">
 		<slot />
@@ -102,6 +122,10 @@
 
 		&.asideOpen {
 			transform: translateX(calc(100vw - var(--inner-padding)));
+
+			@include large-mobile {
+				transform: none;
+			}
 		}
 	}
 
@@ -118,7 +142,7 @@
 		transition: {
 			duration: 0.35s;
 			timing-function: var(--standard-easing);
-			property: width;
+			property: width, transform;
 		}
 
 		:global(a) {
@@ -129,7 +153,7 @@
 			width: 160px;
 		}
 
-		@include tablet {
+		@include large-mobile {
 			position: fixed;
 
 			top: var(--inner-padding);
@@ -138,6 +162,14 @@
 			transform: translate3d(-50%, 0, 0);
 
 			width: 250px;
+
+			z-index: 5;
+
+			.inGame & {
+				width: 100px;
+
+				transform: translate3d(-50%, calc(var(--outer-padding) * -1), 0);
+			}
 		}
 	}
 
@@ -155,9 +187,12 @@
 		position: fixed;
 
 		bottom: 0;
-		left: 0;
+		left: 50%;
 
 		width: 100%;
+		max-width: 500px;
+
+		transform: translateX(-50%);
 
 		z-index: 5;
 	}
@@ -175,6 +210,11 @@
 
 		z-index: 100;
 		-webkit-tap-highlight-color: transparent;
+
+		@include large-mobile {
+			z-index: 10;
+			background-color: rgba(255, 255, 255, 0.8);
+		}
 	}
 
 	aside {
@@ -206,6 +246,32 @@
 		&.asideOpen {
 			transform: translateX(0);
 		}
+
+		@include large-mobile {
+			transition-property: opacity, visibility;
+
+			opacity: 0;
+			visibility: hidden;
+
+			max-width: 500px;
+			height: auto;
+
+			top: 50%;
+			left: 50%;
+
+			z-index: 10;
+
+			transform: translate3d(-50%, -50%, 0);
+
+			border-radius: 20px;
+			border: 1px solid var(--color-blue);
+
+			&.asideOpen {
+				opacity: 1;
+				visibility: visible;
+				transform: translate3d(-50%, -50%, 0);
+			}
+		}
 	}
 
 	.aside-logo {
@@ -215,12 +281,21 @@
 	}
 
 	.animation {
-		position: fixed;
+		position: absolute;
 
 		inset: 50px;
 
 		z-index: 1;
 
 		pointer-events: none;
+
+		&-wrap {
+			position: fixed;
+
+			z-index: 1;
+
+			inset: 0;
+			overflow: hidden;
+		}
 	}
 </style>

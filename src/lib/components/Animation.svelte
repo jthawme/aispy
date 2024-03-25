@@ -44,6 +44,13 @@
 		&-yellow {
 			border-color: var(--color-yellow);
 		}
+
+		@include large-mobile {
+			height: 50%;
+			width: auto;
+
+			transform: translate3d(-100%, -50%, 0) rotate(-45deg);
+		}
 	}
 
 	.cycle .box {
@@ -69,6 +76,10 @@
 			border-color: var(--color-yellow);
 			animation-delay: 1.5s;
 		}
+
+		@include large-mobile {
+			animation-name: CYCLELANDSCAPE;
+		}
 	}
 
 	@keyframes CYCLE {
@@ -78,6 +89,16 @@
 
 		to {
 			transform: translate3d(-50%, 0%, 0) rotate(-45deg);
+		}
+	}
+
+	@keyframes CYCLELANDSCAPE {
+		from {
+			transform: translate3d(-100%, -50%, 0) rotate(-45deg);
+		}
+
+		to {
+			transform: translate3d(0, -50%, 0) rotate(-45deg);
 		}
 	}
 
@@ -107,6 +128,31 @@
 			border-color: var(--color-yellow);
 			animation-delay: 0.3s;
 			--box-rotate: 45deg;
+		}
+
+		@include large-mobile {
+			&-red {
+				width: auto;
+				height: 50%;
+				border-color: var(--color-red);
+				animation-delay: 0.1s;
+				--box-rotate: 45deg;
+			}
+
+			&-green {
+				width: auto;
+				height: 35.2%;
+				border-color: var(--color-green);
+				animation-delay: 0.2s;
+			}
+
+			&-yellow {
+				width: auto;
+				height: 24.7%;
+				border-color: var(--color-yellow);
+				animation-delay: 0.3s;
+				--box-rotate: 45deg;
+			}
 		}
 	}
 

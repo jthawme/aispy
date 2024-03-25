@@ -66,10 +66,10 @@
 	 * @param {string} _text
 	 * @returns {Promise<void>}
 	 */
-	function speakText(_text) {
-		const voices = speechSynthesis
-			.getVoices()
-			.filter((item) => item.lang.startsWith('en-') && !VOICES_AVOID.includes(item.name));
+	async function speakText(_text) {
+		const voices = (await getVoices()).filter(
+			(item) => item.lang.startsWith('en_') && !VOICES_AVOID.includes(item.name)
+		);
 
 		const voice = voices.find((item) => item.default) ?? voices[0] ?? null;
 		// const voice = voices.find(item => item.localService)
@@ -78,8 +78,6 @@
 		// utterance.lang = 'en-UK';
 		utterance.rate = 1;
 		utterance.voice = voice;
-
-		console.log(utterance);
 
 		// @ts-ignore
 		listenCb(utterance, 'boundary', onUtteranceBoundary);
@@ -111,6 +109,27 @@
 		}
 
 		dispatch('end');
+	}
+
+	/**
+	 * @returns {Promise<SpeechSynthesisVoice[]>}
+	 */
+	function getVoices() {
+		return new Promise((resolve) => {
+			const run = (retry = 0) => {
+				const list = speechSynthesis.getVoices();
+
+				if (list.length !== 0) {
+					resolve(list);
+				} else {
+					setTimeout(() => {
+						run(retry + 1);
+					}, 250);
+				}
+			};
+
+			run();
+		});
 	}
 
 	let currentText = '';

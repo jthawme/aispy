@@ -12,6 +12,7 @@
 	import Loader from '$lib/components/UI/Loader.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Camera from '$lib/components/Files/Camera.svelte';
+	import Picker from '$lib/components/Files/Picker.svelte';
 
 	const game = getContext('game');
 
@@ -171,89 +172,89 @@
 	></script>
 </svelte:head>
 
-<div class="content" class:file={type === MEDIA_TYPE.FILE}>
-	<div
-		class:show={type === MEDIA_TYPE.WEBCAM && canUseWebcam && webcamResolved && !imageProcessing}
-		class="video"
-	>
-		<div class="video-window">
-			{#if snap}
-				<div class="screen-flash" on:animationend={onFlashEnd} />
-			{/if}
-
-			<video bind:this={videoEl} muted autoplay />
-
-			<span>Take photos from around you</span>
-		</div>
-	</div>
-
-	<div class="thumbnails">
-		{#each thumbnails as thumbnail, idx}
-			<div class="thumbnails-item">
-				{#if thumbnail}
-					<button
-						disabled={imageProcessing}
-						on:click={() => removeThumbnail(idx)}
-						class="thumbnails-item-remove btn-reset"><Icon name="x" /></button
-					>
-					<img src={thumbnail} alt="" />
+<div class="content" class:file={type === MEDIA_TYPE.FILE} class:processing={imageProcessing}>
+	<div class="media">
+		<div
+			class:show={type === MEDIA_TYPE.WEBCAM && canUseWebcam && webcamResolved && !imageProcessing}
+			class="video"
+		>
+			<div class="video-window">
+				{#if snap}
+					<div class="screen-flash" on:animationend={onFlashEnd} />
 				{/if}
+
+				<video bind:this={videoEl} muted autoplay />
+
+				<span>Take photos from around you</span>
 			</div>
-		{/each}
+		</div>
+
+		{#if webcamResolved}
+			<div class="thumbnails">
+				{#each thumbnails as thumbnail, idx}
+					<div class="thumbnails-item">
+						{#if thumbnail}
+							<button
+								disabled={imageProcessing}
+								on:click={() => removeThumbnail(idx)}
+								class="thumbnails-item-remove btn-reset"><Icon name="x" /></button
+							>
+							<img src={thumbnail} alt="" />
+						{/if}
+					</div>
+				{/each}
+			</div>
+		{/if}
 	</div>
 
 	{#if !imageProcessing}
-		{#if type === MEDIA_TYPE.WEBCAM}
-			<Camera
-				images={$game.images.length}
-				video={videoEl}
-				on:switch={switchType}
-				on:change={onChangeStream}
-				on:error={onWebcamError}
-				on:file={onWebcamFile}
-				on:snap={onSnap}
-			/>
-		{/if}
+		<div class="box">
+			{#if type === MEDIA_TYPE.WEBCAM}
+				<Camera
+					images={$game.images.length}
+					video={videoEl}
+					on:switch={switchType}
+					on:change={onChangeStream}
+					on:error={onWebcamError}
+					on:file={onWebcamFile}
+					on:snap={onSnap}
+				/>
+			{/if}
 
-		{#if type === MEDIA_TYPE.FILE}
-			<ContentBox headerAlign="end">
-				<svelte:fragment slot="header">
-					<span class="color-text-light">{$game.images.length}/{MAX_IMAGES} Photos</span>
-				</svelte:fragment>
+			{#if type === MEDIA_TYPE.FILE}
+				<Picker
+					{canUseWebcam}
+					on:switch={switchType}
+					images={$game.images.length}
+					busy={$game.busy}
+					on:change={onFiles}
+				/>
+			{/if}
 
-				<label class="file-picker">
-					<input type="file" accept="image/*" multiple on:change={onFiles} />
-					<Button dummy expand disabled={$game.images.length >= MAX_IMAGES || $game.busy}
-						>Add images {#if $game.busy}<Loader />{/if}</Button
-					>
-				</label>
-
-				<svelte:fragment slot="footer">
-					{#if canUseWebcam}
-						<TextLink icon="cameraOff" theme="light" on:click={switchType}>Use Webcam</TextLink>
-					{/if}
-				</svelte:fragment>
-
-				<!-- <TextLink slot="below" on:click={onWhy}>Why?</TextLink> -->
-			</ContentBox>
-		{/if}
-
-		<div class="advance">
-			<Button disabled={!complete} expand on:click={onAdvance}>Play!</Button>
+			<div class="advance">
+				<Button disabled={!complete} expand on:click={onAdvance}>Play!</Button>
+			</div>
 		</div>
 	{:else}
-		<ContentBox>
-			<p class="color-text-light">
-				<Loader /><br />Processing images<br /><span class="size-small"
-					>The AI is "thinking" about what it can "see"</span
-				>
-			</p>
-		</ContentBox>
+		<div class="box">
+			<ContentBox>
+				<p class="color-text-light">
+					<Loader /><br />Processing images<br /><span class="size-small"
+						>The AI is "thinking" about what it can "see"</span
+					>
+				</p>
+			</ContentBox>
+		</div>
 	{/if}
 </div>
 
 <style lang="scss">
 	.content {
+		display: flex;
+
+		flex-direction: column;
+
+		align-items: center;
 		margin: auto;
 
 		width: 100%;
@@ -262,6 +263,10 @@
 			text-align: center;
 
 			font-size: var(--font-size-large);
+		}
+
+		@include large-mobile {
+			padding: 4em 0;
 		}
 	}
 
@@ -305,6 +310,11 @@
 	.video {
 		display: none;
 		padding: var(--outer-padding);
+
+		@include large-mobile {
+			width: 100%;
+			max-width: 500px;
+		}
 
 		&.show {
 			display: block;
@@ -351,12 +361,6 @@
 		}
 	}
 
-	.file-picker {
-		input {
-			display: none;
-		}
-	}
-
 	.thumbnails {
 		display: grid;
 
@@ -365,6 +369,8 @@
 		gap: 10px;
 
 		padding: 0 var(--outer-padding);
+		width: 100%;
+		max-width: 500px;
 
 		&-item {
 			position: relative;
@@ -427,9 +433,54 @@
 		.file & {
 			grid-template-columns: repeat(2, 1fr);
 		}
+
+		@include large-mobile {
+			grid-template-columns: 1fr;
+			padding: var(--outer-padding) 0;
+
+			.processing & {
+				grid-template-columns: repeat(4, 1fr);
+				max-width: 100%;
+			}
+
+			&-item {
+				aspect-ratio: 16/12;
+			}
+		}
+	}
+
+	.media {
+		@include large-mobile {
+			display: grid;
+
+			grid-template-columns: 1fr 80px;
+
+			align-items: flex-start;
+			width: 100%;
+			max-width: 500px;
+
+			.processing &,
+			.file & {
+				grid-template-columns: 1fr;
+			}
+		}
 	}
 
 	.advance {
 		padding: 0 var(--inner-padding);
+	}
+
+	.box {
+		display: flex;
+
+		flex-direction: column;
+
+		gap: 10px;
+
+		width: 100%;
+
+		@include large-mobile {
+			max-width: 300px;
+		}
 	}
 </style>

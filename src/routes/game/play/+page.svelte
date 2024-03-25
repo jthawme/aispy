@@ -258,17 +258,19 @@
 				muted={$game.muted}
 			/>
 
-			<div class="rounds color-text-light">
-				{$game.currentIndex + 1}/{$game.answers.length}
-			</div>
+			<div class="display">
+				<div class="rounds color-text-light">
+					{$game.currentIndex + 1}/{$game.answers.length}
+				</div>
 
-			<div class="volume">
-				<TextLink
-					on:click={onToggleMuted}
-					theme="red"
-					icon={$game.muted ? 'volumeOn' : 'volumeOff'}
-					size="large"
-				/>
+				<div class="volume">
+					<TextLink
+						on:click={onToggleMuted}
+						theme="red"
+						icon={$game.muted ? 'volumeOn' : 'volumeOff'}
+						size="large"
+					/>
+				</div>
 			</div>
 
 			{#if showImage}
@@ -362,6 +364,10 @@
 		width: 100%;
 
 		padding: var(--outer-padding) var(--outer-padding) 0;
+
+		@include large-mobile {
+			align-items: center;
+		}
 	}
 
 	.game-area,
@@ -369,6 +375,18 @@
 		flex-grow: 1;
 		flex-shrink: 0;
 		flex-basis: 50%;
+	}
+
+	.game-area {
+		@include large-mobile {
+			flex-basis: 60%;
+		}
+	}
+
+	.answer-area {
+		@include large-mobile {
+			flex-basis: 40%;
+		}
 	}
 
 	.game-area {
@@ -384,11 +402,31 @@
 
 		text-align: center;
 
+		@include large-mobile {
+			width: 100%;
+			max-width: 900px;
+
+			:global(p) {
+				font-size: min(4vw, 64px);
+			}
+		}
+
+		.display {
+			position: absolute;
+
+			bottom: 10px;
+			width: 100%;
+
+			@include large-mobile {
+				max-width: 320px;
+			}
+		}
+
 		.volume,
 		.rounds {
 			position: absolute;
 
-			bottom: 10px;
+			bottom: 0;
 		}
 
 		.volume {
@@ -409,6 +447,11 @@
 
 		font-size: var(--font-size-normal);
 		color: var(--color-red);
+
+		@include large-mobile {
+			bottom: auto;
+			top: var(--inner-padding);
+		}
 	}
 
 	.answer-area {
@@ -446,6 +489,10 @@
 			flex-grow: 1;
 
 			flex-direction: column;
+		}
+
+		@include large-mobile {
+			max-width: 350px;
 		}
 	}
 
@@ -519,6 +566,10 @@
 		max-width: 300px;
 
 		padding: var(--inner-padding);
+
+		@include large-mobile {
+			max-width: 500px;
+		}
 
 		&-image {
 			padding: 10px;

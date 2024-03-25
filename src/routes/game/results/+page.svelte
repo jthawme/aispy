@@ -112,6 +112,14 @@
 		margin: auto;
 
 		width: 100%;
+
+		@include large-mobile {
+			display: flex;
+
+			flex-direction: column;
+
+			align-items: center;
+		}
 	}
 
 	.score-top,
@@ -127,7 +135,12 @@
 	}
 
 	.box {
+		width: 100%;
 		transition-delay: 4s;
+
+		@include large-mobile {
+			max-width: 300px;
+		}
 	}
 
 	.score {
