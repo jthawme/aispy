@@ -370,7 +370,6 @@
 
 		padding: 0 var(--outer-padding);
 		width: 100%;
-		max-width: 500px;
 
 		&-item {
 			position: relative;
@@ -437,6 +436,7 @@
 		@include large-mobile {
 			grid-template-columns: 1fr;
 			padding: var(--outer-padding) 0;
+			max-width: 500px;
 
 			.processing & {
 				grid-template-columns: repeat(4, 1fr);
@@ -450,13 +450,14 @@
 	}
 
 	.media {
+		width: 100%;
+
 		@include large-mobile {
 			display: grid;
 
 			grid-template-columns: 1fr 80px;
 
 			align-items: flex-start;
-			width: 100%;
 			max-width: 500px;
 
 			.processing &,
