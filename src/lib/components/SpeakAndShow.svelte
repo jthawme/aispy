@@ -84,14 +84,16 @@
 
 		speechSynthesis.speak(utterance);
 
-		setTimeout(() => {
-			if (currentText === '') {
-				console.log('FAUX');
-			}
-		}, 500);
+		await timer(250);
+
+		if (currentText === '') {
+			return fauxShow(_text);
+		}
 
 		return new Promise((resolve) => {
-			utterance.onend = () => resolve();
+			utterance.onend = () => {
+				resolve();
+			};
 		});
 	}
 
