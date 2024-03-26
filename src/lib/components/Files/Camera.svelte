@@ -106,14 +106,29 @@
 			const w = Math.min(video.videoWidth, maxImageWidth);
 			const h = (w / video.videoWidth) * video.videoHeight;
 
-			const canvas = new OffscreenCanvas(w, h);
-			const ctx = canvas.getContext('2d');
+			const getImg = () => {
+				if (typeof OffscreenCanvas !== 'undefined') {
+					const canvas = new OffscreenCanvas(w, h);
+					const ctx = canvas.getContext('2d');
 
-			ctx?.drawImage(video, 0, 0, w, h);
+					ctx?.drawImage(video, 0, 0, w, h);
 
-			const blob = await canvas.convertToBlob({
-				type: 'image/png'
-			});
+					return canvas.convertToBlob({
+						type: 'image/png'
+					});
+				}
+
+				const canvas = document.createElement('canvas');
+				canvas.width = w;
+				canvas.height = h;
+				const ctx = canvas.getContext('2d');
+
+				ctx?.drawImage(video, 0, 0, w, h);
+
+				return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+			};
+
+			const blob = await getImg();
 
 			const file = new File([blob], 'webcam.png', {
 				type: 'image/png'

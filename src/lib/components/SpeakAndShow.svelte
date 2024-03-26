@@ -84,6 +84,12 @@
 
 		speechSynthesis.speak(utterance);
 
+		setTimeout(() => {
+			if (currentText === '') {
+				console.log('FAUX');
+			}
+		}, 500);
+
 		return new Promise((resolve) => {
 			utterance.onend = () => resolve();
 		});

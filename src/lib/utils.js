@@ -479,12 +479,25 @@ export const imageResize = async (url, maxWidth = 800) => {
 	const w = Math.min(maxWidth, img.width);
 	const h = (w / img.width) * img.height;
 
-	const canvas = new OffscreenCanvas(w, h);
+	if (typeof OffscreenCanvas !== 'undefined') {
+		const canvas = new OffscreenCanvas(w, h);
+		const ctx = canvas.getContext('2d');
+
+		ctx?.drawImage(img, 0, 0, w, h);
+
+		const blob = await canvas.convertToBlob();
+
+		return URL.createObjectURL(blob);
+	}
+
+	const canvas = document.createElement('canvas');
+	canvas.width = w;
+	canvas.height = h;
 	const ctx = canvas.getContext('2d');
 
 	ctx?.drawImage(img, 0, 0, w, h);
 
-	const blob = await canvas.convertToBlob();
+	const blob = await new Promise((resolve) => canvas.toBlob(resolve));
 
 	return URL.createObjectURL(blob);
 };

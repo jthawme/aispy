@@ -8,7 +8,7 @@
 
 <style lang="scss">
 	a {
-		display: flex;
+		display: block;
 
 		text-decoration: none;
 
