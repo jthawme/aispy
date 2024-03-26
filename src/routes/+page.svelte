@@ -98,7 +98,7 @@
 
 			<Button to="/game" expand>Play</Button>
 
-			<TextLink slot="below" on:click={onAboutClick}>Play what?</TextLink>
+			<TextLink slot="below" to="/about" on:click={onAboutClick}>Play what?</TextLink>
 		</ContentBox>
 	</div>
 </div>
