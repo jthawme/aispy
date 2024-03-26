@@ -89,6 +89,11 @@
 			name: 'og:site_name',
 			property: 'og:site_name',
 			content: formattedTitle
+		},
+		{
+			name: 'keywords',
+			content:
+				'Single Player I Spy, I Spy online, google cloud vision game, computer vision game, AI Game, AI Vision Game, AI Spy'
 		}
 	].filter((item) => !!item);
 </script>
