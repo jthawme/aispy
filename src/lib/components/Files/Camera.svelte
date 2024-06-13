@@ -55,10 +55,13 @@
 	 * @returns {Promise<MediaStream>}
 	 */
 	async function getWebcam() {
-		persistValue('camera', devices[deviceIndex].deviceId);
+		if (devices.length > 0) {
+			persistValue('camera', devices[deviceIndex].deviceId);
+		}
+
 		return navigator.mediaDevices.getUserMedia({
 			video: {
-				deviceId: devices[deviceIndex].deviceId
+				deviceId: devices.length > 0 ? devices[deviceIndex].deviceId : undefined
 			}
 		});
 	}
