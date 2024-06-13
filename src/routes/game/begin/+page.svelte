@@ -183,7 +183,7 @@
 					<div class="screen-flash" on:animationend={onFlashEnd} />
 				{/if}
 
-				<video bind:this={videoEl} muted autoplay />
+				<video bind:this={videoEl} muted autoplay playsinline />
 
 				<span>Take photos from around you</span>
 			</div>
