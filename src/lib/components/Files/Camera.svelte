@@ -59,10 +59,17 @@
 			persistValue('camera', devices[deviceIndex].deviceId);
 		}
 
+		const constraints =
+			devices.length > 0
+				? {
+						deviceId: devices.length > 0 ? devices[deviceIndex].deviceId : undefined
+					}
+				: {
+						facingMode: 'environment'
+					};
+
 		return navigator.mediaDevices.getUserMedia({
-			video: {
-				deviceId: devices.length > 0 ? devices[deviceIndex].deviceId : undefined
-			}
+			video: constraints
 		});
 	}
 
