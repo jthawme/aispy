@@ -84,10 +84,9 @@
 
 	async function run() {
 		try {
-			if (resolving) {
-				devices = await getDevices();
-			}
 			stream = await getWebcam();
+
+			devices = await getDevices();
 
 			dispatch('change', stream);
 		} catch (e) {
