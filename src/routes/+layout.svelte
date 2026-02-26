@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 
+	import 'normalize.css';
 	import '$lib/styles/global.scss';
 	import Head from '$lib/components/Head.svelte';
 	import FooterLinks from '$lib/components/Compound/FooterLinks.svelte';
