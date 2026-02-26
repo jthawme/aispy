@@ -1,11 +1,11 @@
 import { json } from '@sveltejs/kit';
 import vision from '@google-cloud/vision';
+import jwt from 'jsonwebtoken';
 import {
-	PRIVATE_GOOGLE_RECAPTCHA_SECRET,
+	JWT_SALT,
 	PRIVATE_CREDENTIALS_AUTH_PROVIDER_X509_CERT_URL,
 	PRIVATE_CREDENTIALS_AUTH_URI,
 	PRIVATE_CREDENTIALS_CLIENT_EMAIL,
-	PRIVATE_CREDENTIALS_CLIENT_ID,
 	PRIVATE_CREDENTIALS_CLIENT_X509_CERT_URL,
 	PRIVATE_CREDENTIALS_PRIVATE_KEY,
 	PRIVATE_CREDENTIALS_PRIVATE_KEY_ID,
@@ -17,21 +17,18 @@ import {
 
 /**
  *
- * @param {fetch} fetch
  * @param {string} token
- * @returns {Promise<boolean>}
+ * @returns {boolean}
  */
-const validateToken = (fetch, token) => {
-	return fetch(
-		`https://www.google.com/recaptcha/api/siteverify?secret=${PRIVATE_GOOGLE_RECAPTCHA_SECRET}&response=${token}`,
-		{
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			}
-		}
-	)
-		.then((resp) => resp.json())
-		.then((result) => result.success);
+const validateToken = (token) => {
+	try {
+		const { time } = jwt.verify(token, JWT_SALT);
+
+		return true;
+	} catch (e) {
+		console.error(e);
+		return false;
+	}
 };
 
 /**
@@ -46,7 +43,6 @@ const annotateImages = async (urls) => {
 			private_key_id: PRIVATE_CREDENTIALS_PRIVATE_KEY_ID,
 			private_key: PRIVATE_CREDENTIALS_PRIVATE_KEY.split('_').join('\n'),
 			client_email: PRIVATE_CREDENTIALS_CLIENT_EMAIL,
-			client_id: PRIVATE_CREDENTIALS_CLIENT_ID,
 			auth_uri: PRIVATE_CREDENTIALS_AUTH_URI,
 			token_uri: PRIVATE_CREDENTIALS_TOKEN_URI,
 			auth_provider_x509_cert_url: PRIVATE_CREDENTIALS_AUTH_PROVIDER_X509_CERT_URL,
@@ -82,7 +78,7 @@ const getDataUri = async (file) => {
 	return buffer.toString('base64');
 };
 
-export async function POST({ request, fetch }) {
+export async function POST({ request }) {
 	const body = await request.formData();
 
 	const files = Array.from(body.getAll('file'));
@@ -100,14 +96,14 @@ export async function POST({ request, fetch }) {
 		});
 	}
 
-	// const validated = await validateToken(fetch, token);
+	const validated = await validateToken(token);
 
-	// if (!validated) {
-	// 	return json({
-	// 		error: true,
-	// 		message: 'Recaptcha error'
-	// 	});
-	// }
+	if (!validated) {
+		return json({
+			error: true,
+			message: 'Recaptcha error'
+		});
+	}
 
 	const urls = await Promise.all(files.map(getDataUri));
 

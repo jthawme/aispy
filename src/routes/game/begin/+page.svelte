@@ -1,7 +1,6 @@
 <script>
 	import { onMount, onDestroy, getContext } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { PUBLIC_GOOGLE_RECAPTCHA_KEY } from '$env/static/public';
 
 	import { api } from '$lib/api.js';
 	import ContentBox from '$lib/components/Compound/ContentBox.svelte';
@@ -166,10 +165,6 @@
 
 <svelte:head>
 	<title>Begin – AI Spy</title>
-
-	<script
-		src={`https://www.google.com/recaptcha/api.js?render=${PUBLIC_GOOGLE_RECAPTCHA_KEY}`}
-	></script>
 </svelte:head>
 
 <div class="content" class:file={type === MEDIA_TYPE.FILE} class:processing={imageProcessing}>

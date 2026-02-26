@@ -1,5 +1,3 @@
-import { PUBLIC_GOOGLE_RECAPTCHA_KEY } from '$env/static/public';
-
 /**
  * A performant version of a function call, used to keep functions
  * running at 60fps
@@ -452,28 +450,12 @@ export const fileToUrl = (file) => {
 	});
 };
 
-export const getRecaptcha = () => {
-	if (!('grecaptcha' in window)) {
-		throw new Error('Grecaptcha not loaded');
-	}
+export const getRecaptcha = async () => {
+	const { token } = await fetch('/api/token', {
+		method: 'POST'
+	}).then((resp) => resp.json());
 
-	return new Promise((resolve) => {
-		// @ts-ignore
-		grecaptcha.enterprise.ready(async () => {
-			// @ts-ignore
-			const token = await grecaptcha.enterprise.execute(
-				'6LfxlXgsAAAAAGTGxsh9QDBxgygSpaGm59q9e6En',
-				{ action: 'submit' }
-			);
-			resolve(token);
-		});
-		// grecaptcha.ready(function () {
-		// 	// @ts-ignore
-		// 	grecaptcha.execute(PUBLIC_GOOGLE_RECAPTCHA_KEY, { action: 'submit' }).then((token) => {
-		// 		resolve(token);
-		// 	});
-		// });
-	});
+	return token;
 };
 
 /**
