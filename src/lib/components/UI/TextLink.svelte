@@ -31,6 +31,8 @@
 	on:click
 	{...tagProps}
 	{...$$restProps}
+	role={tag === 'button' ? 'button' : 'link'}
+	tabindex="0"
 >
 	<span class="button-inner">
 		{#if icon}

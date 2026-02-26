@@ -12,10 +12,7 @@ export default defineConfig({
 				multipass: true,
 				plugins: [
 					{
-						name: 'preset-default',
-						// by default svgo removes the viewBox which prevents svg icons from scaling
-						// not a good idea! https://github.com/svg/svgo/pull/1461
-						params: { overrides: { removeViewBox: false } }
+						name: 'preset-default'
 					},
 					{
 						name: 'convertColors',
@@ -46,23 +43,11 @@ export default defineConfig({
 			}
 		})
 	],
-
 	css: {
 		preprocessorOptions: {
-			hoistUseStatements: true,
 			scss: {
-				additionalData: (content) => {
-					const imports = `@import "$lib/styles/common.scss";`;
-					// If there are @use statements, insert the import after the last one,
-					// otherwise insert it before all content.
-					const match = content.match(/@use '[^']+';/g);
-					if (match) {
-						const last = match[match.length - 1];
-						return content.replace(last, `${last}\n${imports}`);
-					} else {
-						return `${imports}\n${content}`;
-					}
-				}
+				api: 'modern',
+				additionalData: `@use '$lib/styles/parts/mixins' as *;`
 			}
 		}
 	}

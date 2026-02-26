@@ -5,6 +5,7 @@
 	import TextLink from '$lib/components/UI/TextLink.svelte';
 	import { clamp, doubleRaf, getPersistedValue, persistValue } from '$lib/utils.js';
 	import { STARTING_SCORE, STORAGE } from '$lib/constants.js';
+	import { goto } from '$app/navigation';
 
 	const game = getContext('game');
 
@@ -49,7 +50,10 @@
 	$: textIndex = getScoreBarrier($game.total, $game.images.length);
 
 	$: shareText = `I scored ${$game.total} at single player AI Spy. ${text[textIndex].tweet}`;
-	$: shareUrl = `https://twitter.com/intent/tweet?url=${window.location.origin}&text=${shareText}&related=jthawme`;
+	$: shareUrl =
+		typeof window === 'undefined'
+			? ''
+			: `https://twitter.com/intent/tweet?url=${window.location.origin}&text=${shareText}&related=jthawme`;
 
 	function onShare(e) {
 		if ('share' in navigator) {
@@ -64,6 +68,10 @@
 	}
 
 	onMount(async () => {
+		if ($game.images.length === 0) {
+			goto('/');
+		}
+
 		const previous = getPersistedValue(STORAGE.HIGH_SCORE, 0, (v) => parseInt(v));
 
 		if (previous < $game.total) {

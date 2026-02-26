@@ -1,4 +1,4 @@
-@import 'normalize.css/normalize';
+@use '$lib/styles/parts/mixins' as *;
 
 @font-face {
 	font-family: 'GT Haptik';

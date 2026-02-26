@@ -1,3 +1,5 @@
+@use 'variables' as *;
+
 @mixin small-mobile() {
 	@media screen and (min-width: $small-mobile-breakpoint) {
 		@content;

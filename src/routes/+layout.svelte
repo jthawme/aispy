@@ -12,14 +12,12 @@
 	import { fade } from 'svelte/transition';
 	import { onNavigate } from '$app/navigation';
 
-	/** @type {import('./$types').LayoutData} */
-	export let data;
-
 	async function checkServiceWorker() {
 		const registration = await navigator.serviceWorker.getRegistration();
 
 		if (registration) {
 			registration.addEventListener('updatefound', () => {
+				window.location.reload();
 				console.log('Service Worker update found!');
 			});
 		}

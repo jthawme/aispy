@@ -49,6 +49,8 @@
 	class:expand
 	class:disabled
 	{disabled}
+	role={tag === 'button' ? 'button' : 'link'}
+	tabindex="0"
 	on:click
 	{...tagProps}
 	{...$$restProps}
