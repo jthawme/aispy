@@ -43,10 +43,11 @@ export const api = {
 		 * @param {File[]} files
 		 */
 		async process(files) {
-			const token = await getRecaptcha();
+			// const token = await getRecaptcha();
 
 			const fd = new FormData();
-			fd.append('token', token);
+			// fd.append('token', token);
+			fd.append('token', 'na');
 			files.forEach((file) => fd.append('file', file));
 
 			return fetcher(`/api/images`, {

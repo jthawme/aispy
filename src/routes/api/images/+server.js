@@ -100,14 +100,14 @@ export async function POST({ request, fetch }) {
 		});
 	}
 
-	const validated = await validateToken(fetch, token);
+	// const validated = await validateToken(fetch, token);
 
-	if (!validated) {
-		return json({
-			error: true,
-			message: 'Recaptcha error'
-		});
-	}
+	// if (!validated) {
+	// 	return json({
+	// 		error: true,
+	// 		message: 'Recaptcha error'
+	// 	});
+	// }
 
 	const urls = await Promise.all(files.map(getDataUri));
 

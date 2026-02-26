@@ -459,12 +459,20 @@ export const getRecaptcha = () => {
 
 	return new Promise((resolve) => {
 		// @ts-ignore
-		grecaptcha.ready(function () {
+		grecaptcha.enterprise.ready(async () => {
 			// @ts-ignore
-			grecaptcha.execute(PUBLIC_GOOGLE_RECAPTCHA_KEY, { action: 'submit' }).then((token) => {
-				resolve(token);
-			});
+			const token = await grecaptcha.enterprise.execute(
+				'6LfxlXgsAAAAAGTGxsh9QDBxgygSpaGm59q9e6En',
+				{ action: 'submit' }
+			);
+			resolve(token);
 		});
+		// grecaptcha.ready(function () {
+		// 	// @ts-ignore
+		// 	grecaptcha.execute(PUBLIC_GOOGLE_RECAPTCHA_KEY, { action: 'submit' }).then((token) => {
+		// 		resolve(token);
+		// 	});
+		// });
 	});
 };
 
